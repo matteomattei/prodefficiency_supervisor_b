@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Production Efficency Supervisor B</title>
+	<meta name="format-detection" content="telephone=no"/>
+	<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+
+	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.3.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+
+	<script type="text/javascript" src="cordova.js"></script>
+	<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery.mobile-1.4.3.min.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+</head>
+<body>
+    <div data-role="page" id="normal">
+        <div data-theme="b" data-role="header">
+            <h3>PE Supervisor App-B<span class="id_device"></span></h3>
+            <a data-role="button" href="#" data-iconpos="right" data-mini="true" class="ui-btn-right" onclick="quit()" style="white-space: nowrap !important; overflow: visible !important;" >Exit</a>
+        </div>
+        <div data-role="content">
+            <div class="ui-field-contain">
+                <label for="normal_bulk"><span class="ui-icon-tag ui-btn-icon-left" style="position:relative;">Bulk:</span></label>
+                <form class="ui-filterable">
+                    <input id="bulk-autocomplete-input" data-mini="true" data-type="search" placeholder="Find...">
+                </form>
+                <ul id="normal_bulk" data-role="listview" data-inset="true" data-filter="true" data-input="#bulk-autocomplete-input"></ul>
+            </div>
+
+            <div class="ui-field-contain">
+                <label for="normal_employee"><span class="ui-icon-user ui-btn-icon-left" style="position:relative;">Employee:</span></label>
+                <input type="text" name="normal_employee" id="normal_employee" placeholder="Scan..." value="" data-mini="true" data-clear-btn="true" />
+            </div>
+
+            <div class="ui-field-contain">
+                <label for="normal_manual_operation" class="select"><span class="ui-icon-bars ui-btn-icon-left" style="position:relative;">Operation (manual)</span></label>
+                <select name="normal_manual_operation" id="normal_manual_operation" data-native-menu="false" onchange="operation_manual_select(this)" data-mini="true">
+                    <option>Select Operation (for bulk)</option>
+                </select>
+            </div>
+
+            <div class="ui-field-contain">
+                <label for="normal_operation"><span class="ui-icon-bars ui-btn-icon-left" style="position:relative;">Operation:</span></label>
+                <input type="text" name="normal_operation" id="normal_operation" placeholder="Scan..." value="" data-mini="true" data-clear-btn="true" />
+            </div>
+
+            <div class="ui-field-contain">
+                <label for="normal_layer"><span class="ui-icon-action ui-btn-icon-left" style="position:relative;">Layer:</span></label>
+                <input type="number" min="1" step="1" name="normal_layer" id="normal_layer" placeholder="1" value="" data-mini="true" data-clear-btn="true" />
+            </div>
+
+            <div class="ui-field-contain">
+                <label for="normal_scan_date"><span class="ui-icon-calendar ui-btn-icon-left" style="position:relative;">Scan date:</span></label>
+                <input type="date" name="normal_scan_date" id="normal_scan_date" value="" onchange="date_select('normal')" />
+            </div>
+            <br />
+            <div id="normal_result"></div>
+            <br />
+            <a id="normal_bt_submit" data-theme="" data-role="button" href="#" data-icon="forward" data-iconpos="left">Send to server</a>
+        </div>
+        <div data-theme="b" data-role="footer" data-position="fixed">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#normal" class="ui-btn-active ui-state-persist" data-transition="none">Normal</a></li>
+                    <li><a href="#flagno" data-transition="none">Flag no</a></li>
+                    <li><a href="#info" data-transition="none">Info</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="ui-loader-background"></div>
+    </div>
+
+    <div data-role="page" id="flagno">
+        <div data-theme="b" data-role="header">
+            <h3>PE Supervisor App-B<span class="id_device"></span></h3>
+            <a data-role="button" href="#" data-iconpos="right" data-mini="true" class="ui-btn-right" onclick="quit()" style="white-space: nowrap !important; overflow: visible !important;" >Exit</a>
+        </div>
+        <div data-role="main" class="ui-content">
+            <div class="ui-field-contain">
+                <label for="flagno_bulk"><span class="ui-icon-tag ui-btn-icon-left" style="position:relative;">Bulk:</span></label>
+                <form class="ui-filterable">
+                    <input id="flagno_bulk-autocomplete-input" data-mini="true" data-type="search" placeholder="Find...">
+                </form>
+                <ul id="flagno_bulk" data-role="listview" data-inset="true" data-filter="true" data-input="#flagno_bulk-autocomplete-input"></ul>
+            </div>
+
+            <div class="ui-field-contain">
+                <label for="flagno_employee"><span class="ui-icon-user ui-btn-icon-left" style="position:relative;">Employee:</span></label>
+                <input type="text" name="flagno_employee" id="flagno_employee" placeholder="Scan..." value="" data-mini="true" data-clear-btn="true" />
+            </div>
+
+            <div class="ui-field-contain">
+                <label for="flagno_operation" class="select"><span class="ui-icon-bars ui-btn-icon-left" style="position:relative;">Operation</span></label>
+                <select name="flagno_operation" id="flagno_operation" data-native-menu="false" onchange="operation_flagno_select(this)" data-mini="true">
+                    <option>Select Operation</option>
+                </select>
+            </div>
+
+            <div class="ui-field-contain">
+                <label for="flagno_scan_date"><span class="ui-icon-calendar ui-btn-icon-left" style="position:relative;">Scan date:</span></label>
+                <input type="date" name="flagno_scan_date" id="flagno_scan_date" value="" onchange="date_select('flagno')" />
+            </div>
+
+            <div class="ui-field-contain" id="flagno_hours_container">
+                <label for="flagno_hours"><span class="ui-icon-clock ui-btn-icon-left" style="position:relative;">Hours</span></label>
+                <input type="range" id="flagno_hours" name="flagno_hours" value="0" min="0" max="10" step="1" />
+            </div>
+            <div class="ui-field-contain" id="flagno_minutes_container">
+                <label for="flagno_minutes"><span class="ui-icon-clock ui-btn-icon-left" style="position:relative;">Minutes</span></label>
+                <input type="range" id="flagno_minutes" name="flagno_minutes" value="0" min="0" max="59" step="5" />
+            </div>
+            <br />
+            <div id="flagno_result"></div>
+            <br />
+            <a id="flagno_bt_submit" data-theme="" data-role="button" href="#" data-icon="forward" data-iconpos="left">Send to server</a>
+        </div>
+        <div data-theme="b" data-role="footer" data-position="fixed">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#normal" data-transition="none">Normal</a></li>
+                    <li><a href="#flagno" class="ui-btn-active ui-state-persist" data-transition="none">Flag no</a></li>
+                    <li><a href="#info" data-transition="none">Info</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div data-role="page" id="info">
+        <div data-theme="b" data-role="header">
+            <h3>PE Supervisor App-B<span class="id_device"></span></h3>
+            <a data-role="button" href="#" data-iconpos="right" data-mini="true" class="ui-btn-right" onclick="quit()" style="white-space: nowrap !important; overflow: visible !important;" >Exit</a>
+        </div>
+        <div data-role="main" class="ui-content">
+          <h3>&copy; 2015 - <a href="http://www.matteomattei.com">Matteo Mattei</a></h3>
+          <p>Production Efficiency App B - Version <span id="version"></span></p>
+        </div>
+        <div data-theme="b" data-role="footer" data-position="fixed">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#normal" data-transition="none">Normal</a></li>
+                    <li><a href="#flagno" data-transition="none">Flag no</a></li>
+                    <li><a href="#info" class="ui-btn-active ui-state-persist" data-transition="none">Info</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div data-role="page" id="line_input">
+        <div data-role="header" data-theme="b">
+            <h3>Insert the line ID</h3>
+        </div>
+        <div data-role="content">
+            <input type="text" id="id_device" placeholder="Line ID" />
+            <input data-role="button" data-mini="true" data-theme="b" data-inline="true" type="submit" id="addCat" value="Insert" onclick="save_id_device()" />
+        </div>
+    </div>
+
+</body>
+</html>
