@@ -37,9 +37,9 @@ var app = {
 var normal_data = {};
 var flagno_data = {};
 var scan_in_progress = false;
-// var base_url = 'http://192.168.1.1';
+//var base_url = 'http://192.168.1.48';
 var base_url = 'http://192.168.0.11';
-var post_url = base_url+'/supervisor_input_b.php';
+var post_url = base_url+'/supervisor_input.php';
 var get_operations = base_url+'/supervisor_getoperations.php';
 var get_flagno_operations = base_url+'/supervisor_getoperations_flagno.php';
 var get_bulks = base_url+'/supervisor_getbulks.php';
@@ -88,13 +88,15 @@ function bulk_keypress_cb(e, data){
             flagno_data['bulk'] = value;
         }
         $.post(get_bulks,{'bulk':value},function(response){
-            $.each( response, function ( i, val ) {
-                html += "<li>" + val + "</li>";
-            });
-            $ul.html( html );
-            $ul.listview( "refresh" );
-            $ul.trigger( "updatelayout");
-            //console.log(html);
+            if (response.res == 'OK'){
+                $.each( response.msg, function ( i, val ) {
+                    html += "<li>" + val + "</li>";
+                });
+                $ul.html( html );
+                $ul.listview( "refresh" );
+                $ul.trigger( "updatelayout");
+                //console.log(html);
+            }
         },'json');
     }
     check_params();
@@ -209,21 +211,21 @@ function check_params(){
 function reset_fields(){
     /* reset all fields at app startup and after every submit */
     var d = new Date();
-    normal_data = {};
-    flagno_data = {};
+    //normal_data = {};
+    //flagno_data = {};
 
     /* normal page */
     $('#normal_bt_submit').addClass('ui-disabled');
     $('#normal_employee').val('');
-    $('#normal_bulk').val(''); // TODO: comment it!
-    $('#normal_manual_operation').selectmenu('disable').empty();
-    $('#normal_operation').val('');
+    //$('#normal_bulk').val('');
+    //$('#normal_manual_operation').selectmenu('disable').empty();
+    //$('#normal_operation').val('');
     $('#normal_layer').val('1');
     $('#normal_scan_date').val(d.toISOString().split('T')[0]);
     normal_data['date']=$('#normal_scan_date').val();
     normal_data['employee']='';
-    normal_data['bulk']='';
-    normal_data['operation']='';
+    //normal_data['bulk']='';
+    //normal_data['operation']='';
     normal_data['layer']='1';
     normal_data['id_device'] = window.localStorage.getItem('id_device');
 
@@ -237,10 +239,12 @@ function reset_fields(){
     $('#flagno_minutes').val('0');
     flagno_data['date']=$('#flagno_scan_date').val();
     flagno_data['employee']='';
-    flagno_data['bulk']='';
-    flagno_data['operation']='';
+    //flagno_data['bulk']='';
+    //flagno_data['operation']='';
     flagno_data['tot_ore_flag_no']='0';
+    $('#flagno_minutes').siblings('.ui-slider-track').children('a').attr('style','left:0');
     flagno_data['tot_min_flag_no']='0';
+    $('#flagno_hours').siblings('.ui-slider-track').children('a').attr('style','left:0');
     flagno_data['id_device'] = window.localStorage.getItem('id_device');
 }
 
@@ -338,6 +342,8 @@ function save_id_device(){
     if(id_device != ''){
         window.localStorage.setItem('id_device',id_device);
         $('.id_device').text(' - '+id_device);
+        normal_data['id_device'] = window.localStorage.getItem('id_device');
+        flagno_data['id_device'] = window.localStorage.getItem('id_device');
         $("body").pagecontainer("change", "#normal", {
             transition: 'slidedown',
             reload    : true
